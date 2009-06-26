@@ -29,9 +29,27 @@ require 'edgecase'
 #
 # Your goal is to write the score method.
 
+require 'enumerator'
+
 def score(dice)
-  # You need to write this method
+  score = 0
+  i = 0
+  puts "dice is #{dice.inspect}"
+  dice.each_cons(3) do |three_dice|
+    first = three_dice.first
+    if three_dice.all? {|die| die == first}
+      score = first == 1 ? 1000 : 100 * first
+      break
+    end
+    i += 1
+  end
+  if score > 0
+    dice = dice.dup
+    dice[i, 3] = 0
+  end
+  dice.inject(score) {|total, die| total + ({1 => 100, 5 => 50}[die] || 0)}
 end
+
 
 class AboutScoringAssignment < EdgeCase::Koan
   def test_score_of_an_empty_list_is_zero
